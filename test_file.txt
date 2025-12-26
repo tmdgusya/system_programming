@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *fp;
+    char buffer[255];
+
+    // 1. 파일 열기 (r = read 모드)
+    fp = fopen("test.txt", "r");
+
+    // 파일이 없는 경우 예외 처리
+    if (fp == NULL) {
+        printf("파일을 열 수 없습니다.\n");
+        return 1;
+    }
+
+    // 2. 파일 내용을 한 줄씩 읽어서 화면에 출력
+    // fgets는 파일의 끝(EOF)에 도달하면 NULL을 반환합니다.
+    while (fgets(buffer, 255, fp) != NULL) {
+        printf("%s", buffer);
+    }
+
+    // 3. 파일 닫기 (메모리 누수 방지)
+    fclose(fp);
+
+    return 0;
+}
