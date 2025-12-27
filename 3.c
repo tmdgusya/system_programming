@@ -1,3 +1,5 @@
+#include <asm-generic/errno-base.h>
+#include <asm-generic/errno.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -23,7 +25,7 @@ int main(int argc, char *argv[]) {
     if (fd == -1) {
         if (errno == EINTR) {
             fprintf(stderr, "open interrupted by signal\n");
-        } else if (errno == EAGAIN) {
+        } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
             fprintf(stderr, "File is not ready for reading\n");
         } else {
             perror("open");
@@ -32,6 +34,16 @@ int main(int argc, char *argv[]) {
     }
 
     while (len != 0 && (ret = read(fd, ptr, len)) != 0) {
+        if (ret == -1) {
+            if (errno == EINTR) {
+                continue;
+            }
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                fprintf(stderr, "File is not ready for reading\n");
+                sleep(1);
+                break;
+            }
+        }
         if (ret == -1) {
             perror("read");
             break;
