@@ -24,6 +24,10 @@ int main(void) {
         return 1;
     }
 
+    if(fileno(in)) {
+        printf("\n %d ", fileno(in));
+    }
+
     if (feof(in)) {
         /* EOF 도달 (정상 종료) */
         printf("\n[INFO] EOF에 도달했습니다 (정상 종료)\n");
